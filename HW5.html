@@ -369,15 +369,6 @@ summary {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
-## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
-## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
-## ✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ───────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(imputeTS)</code></pre>
 <pre><code>## Registered S3 method overwritten by 'xts':
 ##   method     from
@@ -394,27 +385,247 @@ summary {
 iris_with_missing = iris %&gt;% 
   map_df(~replace(.x, sample(1:150, 20), NA)) %&gt;%
   mutate(Species = as.character(Species))</code></pre>
-<pre class="r"><code>iris_with_missing %&gt;%  
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<pre class="r"><code>replacenavalues = function(x) { 
+  if (is.numeric(x)) {
+    (na_mean(x, option = &quot;mean&quot;, maxgap = Inf)) } 
+  else if (is.character(x)) {
+    (replace_na(x, &quot;virginica&quot;))}
+}</code></pre>
+<pre class="r"><code>output = map(iris_with_missing, replacenavalues)</code></pre>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<pre class="r"><code>df1 = 
+  tibble(observations = list.files(path = &quot;data/&quot;, pattern = &quot;csv&quot;, all.files = TRUE, full.names = TRUE)) %&gt;% 
+  mutate(data = map(observations, read_csv)) %&gt;% 
+  unnest() %&gt;% 
   mutate(
-    Species = replace_na(Species, &quot;virginica&quot;),
-    Sepal.Length = na_mean(Sepal.Length, option = &quot;mean&quot;, maxgap = Inf),
-    Sepal.Width = na_mean(Sepal.Width, option = &quot;mean&quot;, maxgap = Inf),
-    Petal.Length = na_mean(Petal.Length, option = &quot;mean&quot;, maxgap = Inf),
-    Petal.Width = na_mean(Petal.Width, option = &quot;mean&quot;, maxgap = Inf))</code></pre>
-<pre><code>## # A tibble: 150 x 5
-##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;  
-##  1         5.1          3.5         1.4         0.2  setosa 
-##  2         4.9          3           1.4         0.2  setosa 
-##  3         4.7          3.2         1.3         0.2  setosa 
-##  4         4.6          3.1         1.5         1.19 setosa 
-##  5         5            3.6         1.4         0.2  setosa 
-##  6         5.4          3.9         1.7         0.4  setosa 
-##  7         5.82         3.4         1.4         0.3  setosa 
-##  8         5            3.4         1.5         0.2  setosa 
-##  9         4.4          2.9         1.4         0.2  setosa 
-## 10         4.9          3.1         3.77        0.1  setosa 
-## # … with 140 more rows</code></pre>
+  observations = str_remove(observations,&quot;.csv&quot;),
+  observations = str_remove(observations,&quot;data//&quot;)) %&gt;% 
+  separate(observations, into = c(&quot;Arm&quot;, &quot;Subject ID&quot;), sep=&quot;_(?=[^_]+$)&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   week_1 = col_double(),
+##   week_2 = col_double(),
+##   week_3 = col_double(),
+##   week_4 = col_double(),
+##   week_5 = col_double(),
+##   week_6 = col_double(),
+##   week_7 = col_double(),
+##   week_8 = col_double()
+## )</code></pre>
+</div>
 
 
 
