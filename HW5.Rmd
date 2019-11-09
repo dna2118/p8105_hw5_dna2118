@@ -50,14 +50,48 @@ output = map(iris_with_missing, replacenavalues)
 ```
 ## Question 2
 ```{r}
-df1 = 
-  tibble(observations = list.files(path = "data/", pattern = "csv", all.files = TRUE, full.names = TRUE)) %>% 
-  mutate(data = map(observations, read_csv)) %>% 
-  unnest() %>% 
+df1 =  
+  tibble(Participants = list.files(path = "data/", pattern = "csv", all.files = TRUE, full.names = TRUE)) %>%
+  mutate(data = map(Participants, read_csv)) %>% 
+  unnest() 
+```
+
+```{r}
+df2 =  
+  df1 %>% 
   mutate(
-  observations = str_remove(observations,".csv"),
-  observations = str_remove(observations,"data//")) %>% 
-  separate(observations, into = c("Arm", "Subject ID"), sep="_(?=[^_]+$)")
+    Participants = str_remove(Participants,".csv"),
+    Participants = str_remove(Participants,"data//")) %>%  
+pivot_longer(
+  week_1:week_8,
+  names_to = "Week",
+  names_prefix = "week_",
+  values_to = "Values")
+  
+```
+
+```{r}
+df3=
+ df2 %>% 
+ mutate(
+ Participants2 = Participants) %>% 
+ separate(Participants, into=c("Arm", "Subject_ID"), sep="_") 
+```
+
+```{r}
+df3 %>% 
+ggplot(aes(x = Week, y = Values, group = Participants2, color = Arm)) + 
+geom_line() +
+  viridis::scale_color_viridis(
+    name = "Arm", 
+    discrete = TRUE, 
+    option = "viridis"
+  ) + 
+  theme_minimal() +
+  labs(
+    x = "Week",
+    y = "Values", 
+    title = "Progression of Subjects over Eight Weeks")
 ```
 
 
